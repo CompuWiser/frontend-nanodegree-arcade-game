@@ -33,13 +33,13 @@ const characters = [
     'images/char-princess-girl.png'
 ];
 
-var Player = function playerConstructor(x = 200, y = 400, character = characters[0]) {
+var Player = function playerConstructor(x = 203, y = 408, character = characters[0]) {
     this.x = x;
     this.y = y;
     this.character = character;
-}
+};
 
-Player.prototype.update = function updatePlayerPosition() { 
+Player.prototype.update = function () { 
 
 };
 
@@ -47,26 +47,46 @@ Player.prototype.render = function () {
     ctx.drawImage(Resources.get(this.character), this.x, this.y);
 };
 
-Player.prototype.handleInput = function (key) {
-    switch (key) {
-        case "left":
-            
-            break;
-        
-        case "right":
+const verticalStep = 84;
+const horizontalStep = 100;
 
+Player.prototype.move = function (direction) {
+    switch (direction) {
+        case "left":
+            this.x -= horizontalStep;
+            break;
+    
+        case "right":
+            this.x += horizontalStep;
             break;
 
         case "up":
-
+            this.y -= verticalStep;
             break;
 
         case "down":
-
+            this.y += verticalStep;
             break;
+    }
+};
 
-        default:
-            break;
+Player.prototype.withinHorizontalRange = function () { 
+    return true;
+}
+
+Player.prototype.withinVerticalRange = function () { 
+    return true;
+}
+
+Player.prototype.handleInput = function (key) {
+    if (key === "left" && this.withinHorizontalRange()) { 
+        this.move("left");
+    } else if (key === "right" && this.withinHorizontalRange()) {
+        this.move("right");
+    } else if (key === "up" && this.withinVerticalRange()) {
+        this.move("up");
+    } else if (key === "down" && this.withinVerticalRange()) {
+        this.move("down");
     }
 };
 
