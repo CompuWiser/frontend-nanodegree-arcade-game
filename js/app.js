@@ -26,17 +26,16 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 
 const characters = [
-    '../images/char-boy.png',
-    '../images/char-cat-girl.png',
-    '../images/char-horn-girl.png',
-    '../images/char-pink-girl.png',
-    '../images/char-princess-girl.png'
+    'images/char-boy.png',
+    'images/char-cat-girl.png',
+    'images/char-horn-girl.png',
+    'images/char-pink-girl.png',
+    'images/char-princess-girl.png'
 ];
 
-var Player = function playerConstructor(x, y, speed, Character = characters[0]) {
+var Player = function playerConstructor(x = 200, y = 400, character = characters[0]) {
     this.x = x;
     this.y = y;
-    this.speed = speed;
     this.character = character;
 }
 
@@ -45,7 +44,7 @@ Player.prototype.update = function updatePlayerPosition() {
 };
 
 Player.prototype.render = function () {
-
+    ctx.drawImage(Resources.get(this.character), this.x, this.y);
 };
 
 Player.prototype.handleInput = function (key) {
@@ -75,8 +74,9 @@ Player.prototype.handleInput = function (key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var allEnemies = [];
 
-
+var player = new Player();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
