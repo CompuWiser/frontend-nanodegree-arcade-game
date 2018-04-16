@@ -1,5 +1,5 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function enemyConstructor(x, y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -24,6 +24,52 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+
+const characters = [
+    '../images/char-boy.png',
+    '../images/char-cat-girl.png',
+    '../images/char-horn-girl.png',
+    '../images/char-pink-girl.png',
+    '../images/char-princess-girl.png'
+];
+
+var Player = function playerConstructor(x, y, speed, Character = characters[0]) {
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.character = character;
+}
+
+Player.prototype.update = function updatePlayerPosition() { 
+
+};
+
+Player.prototype.render = function () {
+
+};
+
+Player.prototype.handleInput = function (key) {
+    switch (key) {
+        case "left":
+            
+            break;
+        
+        case "right":
+
+            break;
+
+        case "up":
+
+            break;
+
+        case "down":
+
+            break;
+
+        default:
+            break;
+    }
+};
 
 
 // Now instantiate your objects.
