@@ -33,10 +33,14 @@ const characters = [
     'images/char-princess-girl.png'
 ];
 
-var Player = function playerConstructor(x = 203, y = 408, character = characters[0]) {
+const initialXLocation = 203;
+const initialYLocation = 408;
+
+var Player = function playerConstructor(x = initialXLocation, y = initialYLocation, character = characters[0]) {
     this.x = x;
     this.y = y;
     this.character = character;
+    this.gameWon = false;
 };
 
 Player.prototype.update = function () { 
@@ -70,28 +74,51 @@ Player.prototype.move = function (direction) {
     }
 };
 
+const verticalBlocks = 6;
+const horizontalBlocks = 5;
+
+const leftEdge = initialXLocation - (horizontalStep * (horizontalBlocks - 1) / 2);
+const rightEdge = initialXLocation + (horizontalStep * (horizontalBlocks - 1) / 2);
+const topEdge = initialYLocation - (verticalStep * (verticalBlocks - 1));
+const bottomEdge = initialYLocation;
+
 Player.prototype.canGo = function (direction) {
+    if (this.gameWon) return false;
+
     switch (direction) {
         case "left":
-            return this.x > 3;
+            return this.x > leftEdge;
             break;
     
         case "right":   
-            return this.x < 403;
+            return this.x < rightEdge;
             break;
 
         case "up":
-            return this.y > -12;
+            return this.y > topEdge;
             break;
 
         case "down":
-            return this.y < 408;
+            return this.y < bottomEdge;
             break;
     }
 }
 
-Player.prototype.logPosition = function () { 
+/* Player.prototype.logPosition = function () { 
     console.log("x = " + this.x + ", y = " + this.y);
+} */
+
+Player.prototype.gameWin = function () {
+    this.gameWon = true;
+    setTimeout(() => {
+        this.resetPlayerPosition();
+        this.gameWon = false;
+    }, 2000);
+}
+
+Player.prototype.resetPlayerPosition = function () {
+    this.x = initialXLocation;
+    this.y = initialYLocation;
 }
 
 Player.prototype.handleInput = function (key) {
@@ -105,7 +132,11 @@ Player.prototype.handleInput = function (key) {
         this.move("down");
     }
 
-    this.logPosition();
+    if (this.y < 0) {
+        this.gameWin();
+    }
+
+    //this.logPosition();
 };
 
 
