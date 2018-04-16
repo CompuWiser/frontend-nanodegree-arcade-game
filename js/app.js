@@ -70,24 +70,42 @@ Player.prototype.move = function (direction) {
     }
 };
 
-Player.prototype.withinHorizontalRange = function () { 
-    return true;
+Player.prototype.canGo = function (direction) {
+    switch (direction) {
+        case "left":
+            return this.x > 3;
+            break;
+    
+        case "right":   
+            return this.x < 403;
+            break;
+
+        case "up":
+            return this.y > -12;
+            break;
+
+        case "down":
+            return this.y < 408;
+            break;
+    }
 }
 
-Player.prototype.withinVerticalRange = function () { 
-    return true;
+Player.prototype.logPosition = function () { 
+    console.log("x = " + this.x + ", y = " + this.y);
 }
 
 Player.prototype.handleInput = function (key) {
-    if (key === "left" && this.withinHorizontalRange()) { 
+    if (key === "left" && this.canGo("left")) { 
         this.move("left");
-    } else if (key === "right" && this.withinHorizontalRange()) {
+    } else if (key === "right" && this.canGo("right")) {
         this.move("right");
-    } else if (key === "up" && this.withinVerticalRange()) {
+    } else if (key === "up" && this.canGo("up")) {
         this.move("up");
-    } else if (key === "down" && this.withinVerticalRange()) {
+    } else if (key === "down" && this.canGo("down")) {
         this.move("down");
     }
+
+    this.logPosition();
 };
 
 
