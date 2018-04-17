@@ -1,7 +1,20 @@
+function randomEnemySpeed() {
+    let minSpeed = 100;
+    let maxSpeed = 200;
+    return (function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    })(minSpeed, maxSpeed);
+}
+
 // Enemies our player must avoid
-var Enemy = function enemyConstructor(x, y, speed) {
-    // Variables applied to each of our instances go here,
+var Enemy = function enemyConstructor(line = 1, speed = randomEnemySpeed()) {
+    // Variables applied63, 147, 230 to each of our instances go here,
     // we've provided one for you to get started
+    const enemyLines = [63, 147, 230];
+
+    this.x = -100;
+    this.y = enemyLines[line-1];
+    this.speed = speed;
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -14,6 +27,12 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x += this.speed * dt;
+
+    if (this.x > 500) {
+        this.x = -100;
+        this.speed = randomEnemySpeed();
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -33,13 +52,21 @@ const characters = [
     'images/char-princess-girl.png'
 ];
 
+/* function getRandomCharacter() {
+    let randomIndex = Math.floor(Math.random() * characters.length - 1);
+    console.log(randomIndex);
+    console.log(characters[randomIndex]);
+    return characters[randomIndex];
+} */
+
 const initialXLocation = 203;
 const initialYLocation = 408;
 
-var Player = function playerConstructor(x = initialXLocation, y = initialYLocation, character = characters[0]) {
-    this.x = x;
-    this.y = y;
-    this.character = character;
+var Player = function playerConstructor() {
+    this.x = initialXLocation;
+    this.y = initialYLocation;
+    this.character = characters[0];
+    //this.character = getRandomCharacter();
     this.gameWon = false;
 };
 
@@ -143,7 +170,7 @@ Player.prototype.handleInput = function (key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [];
+var allEnemies = [new Enemy(1), new Enemy(2), new Enemy(3)];
 
 var player = new Player();
 
