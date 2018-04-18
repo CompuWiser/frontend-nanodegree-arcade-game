@@ -143,7 +143,7 @@ Player.prototype.canGo = function (direction) {
             return this.x > leftEdge;
             break;
     
-        case "right":   
+        case "right":
             return this.x < rightEdge;
             break;
 
@@ -155,14 +155,10 @@ Player.prototype.canGo = function (direction) {
             return this.y < bottomEdge;
             break;
     }
-}
-
-Player.prototype.processMovement = function (direction) {
-    if (this.canGo(direction)) this.move(direction);
 };
 
 Player.prototype.handleInput = function (direction) {
-    this.processMovement(direction);
+    if (this.canGo(direction)) this.move(direction);
 
     if (this.y < 0) {
         this.gameWin();
@@ -184,15 +180,11 @@ Player.prototype.gameWin = function () {
 Player.prototype.freezeAndReset = function (TimeInSeconds) {
     this.disabled = true;
     setTimeout(() => {
-        this.resetPlayerPosition();
+        this.x = initialXLocation;
+        this.y = initialYLocation;
         this.disabled = false;
     }, TimeInSeconds * 1000);
 };
-
-Player.prototype.resetPlayerPosition = function () {
-    this.x = initialXLocation;
-    this.y = initialYLocation;
-}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
