@@ -10,12 +10,11 @@ function randomEnemySpeed() {
 var Enemy = function enemyConstructor(line = 1, speed = randomEnemySpeed()) {
     // Variables applied63, 147, 230 to each of our instances go here,
     // we've provided one for you to get started
-    const enemyLines = [63, 147, 230];
-
+    this.enemyLinesOnYAxis = [230, 147, 63];
     this.x = -100;
-    this.y = enemyLines[line-1];
+    this.y = this.enemyLinesOnYAxis[line - 1];
     this.speed = speed;
-
+    this.gameFrozen = false;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -23,16 +22,58 @@ var Enemy = function enemyConstructor(line = 1, speed = randomEnemySpeed()) {
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
+const enemyStartPosition = -100;
+const enemyEndPosition = 500;
+
+function playerOnRowNum(row) {
+    const playerYAxis = [240,156,72];
+    return player.y == playerYAxis[row - 1];
+}
+
+Enemy.prototype.enemyOnRow = function (row) { 
+    return this.y == this.enemyLinesOnYAxis[row - 1];
+};
+
+Enemy.prototype.update = function (dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed * dt;
 
-    if (this.x > 500) {
-        this.x = -100;
+    if (this.x > enemyEndPosition) {
+        this.x = enemyStartPosition;
         this.speed = randomEnemySpeed();
     }
+
+    if (!this.gameFrozen) {
+        if ((this.enemyOnRow(3) && playerOnRowNum(3)) || (this.enemyOnRow(2) && playerOnRowNum(2)) || (this.enemyOnRow(1) && playerOnRowNum(1))) {
+            if (player.x - 78 <= this.x && player.x + 82 >= this.x) {
+                this.gameFrozen = true;
+                this.gameLost();
+            }
+        }
+    }
+};
+
+Enemy.prototype.gameLost = function () {
+    this.freezeAllEnemies(2);
+    player.freezeAndReset(2);
+};
+
+Enemy.prototype.freezeAllEnemies = function (seconds) {
+    allEnemies.forEach(function (enemy) {
+        enemy.speed = 0;
+    });
+    setTimeout(() => {
+        this.unFreezeAllEnemies();
+    }, seconds * 1000);
+};
+
+Enemy.prototype.unFreezeAllEnemies = function () {
+    allEnemies.forEach(function (enemy) {
+        enemy.speed = randomEnemySpeed();
+    });
+    this.gameFrozen = false;
 };
 
 // Draw the enemy on the screen, required method for game
@@ -40,24 +81,6 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-
-const characters = [
-    'images/char-boy.png',
-    'images/char-cat-girl.png',
-    'images/char-horn-girl.png',
-    'images/char-pink-girl.png',
-    'images/char-princess-girl.png'
-];
-
-/* function getRandomCharacter() {
-    let randomIndex = Math.floor(Math.random() * characters.length - 1);
-    console.log(randomIndex);
-    console.log(characters[randomIndex]);
-    return characters[randomIndex];
-} */
 
 const initialXLocation = 203;
 const initialYLocation = 408;
@@ -65,12 +88,11 @@ const initialYLocation = 408;
 var Player = function playerConstructor() {
     this.x = initialXLocation;
     this.y = initialYLocation;
-    this.character = characters[0];
-    //this.character = getRandomCharacter();
-    this.gameWon = false;
+    this.character = 'images/char-boy.png';
+    this.disabled = false;
 };
 
-Player.prototype.update = function () { 
+Player.prototype.update = function () {
 
 };
 
@@ -82,6 +104,8 @@ const verticalStep = 84;
 const horizontalStep = 100;
 
 Player.prototype.move = function (direction) {
+    //this.logPosition();
+
     switch (direction) {
         case "left":
             this.x -= horizontalStep;
@@ -110,7 +134,7 @@ const topEdge = initialYLocation - (verticalStep * (verticalBlocks - 1));
 const bottomEdge = initialYLocation;
 
 Player.prototype.canGo = function (direction) {
-    if (this.gameWon) return false;
+    if (this.disabled) return false;
 
     switch (direction) {
         case "left":
@@ -132,16 +156,24 @@ Player.prototype.canGo = function (direction) {
 }
 
 /* Player.prototype.logPosition = function () { 
-    console.log("x = " + this.x + ", y = " + this.y);
+    console.log("\nPlayer.x = " + this.x + ", Player.y = " + this.y);
+    allEnemies.forEach(function (enemy, index) { 
+        console.log(`Enemy${index + 1}.x = ${Math.floor(enemy.x)}, Enemy${index + 1}.y = ${enemy.y}`);
+    });
 } */
 
 Player.prototype.gameWin = function () {
-    this.gameWon = true;
+    this.freezeAndReset(2);
+    allEnemies[0].freezeAllEnemies(2);
+};
+
+Player.prototype.freezeAndReset = function (TimeInSeconds) {
+    this.disabled = true;
     setTimeout(() => {
         this.resetPlayerPosition();
-        this.gameWon = false;
-    }, 2000);
-}
+        this.disabled = false;
+    }, TimeInSeconds * 1000);
+};
 
 Player.prototype.resetPlayerPosition = function () {
     this.x = initialXLocation;
