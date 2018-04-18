@@ -1,20 +1,13 @@
-function randomEnemySpeed() {
-    let minSpeed = 100;
-    let maxSpeed = 200;
-    return (function (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    })(minSpeed, maxSpeed);
-}
-
 // Enemies our player must avoid
-var Enemy = function enemyConstructor(line = 1, speed = randomEnemySpeed()) {
-    // Variables applied63, 147, 230 to each of our instances go here,
+var Enemy = function (line = 1) {
+    // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.enemyLinesOnYAxis = [230, 147, 63];
     this.x = -100;
     this.y = this.enemyLinesOnYAxis[line - 1];
-    this.speed = speed;
+    this.speed = randomEnemySpeed();
     this.gameFrozen = false;
+
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -83,6 +76,7 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Construct a Player
 
 const initialXLocation = 203;
 const initialYLocation = 408;
@@ -165,13 +159,6 @@ Player.prototype.handleInput = function (direction) {
     }
 };
 
-/* Player.prototype.logPosition = function () { 
-    console.log("\nPlayer.x = " + this.x + ", Player.y = " + this.y);
-    allEnemies.forEach(function (enemy, index) { 
-        console.log(`Enemy${index + 1}.x = ${Math.floor(enemy.x)}, Enemy${index + 1}.y = ${enemy.y}`);
-    });
-} */
-
 Player.prototype.gameWin = function () {
     this.freezeAndReset(2);
     allEnemies[0].freezeAllEnemies(2);
@@ -185,6 +172,13 @@ Player.prototype.freezeAndReset = function (TimeInSeconds) {
         this.disabled = false;
     }, TimeInSeconds * 1000);
 };
+
+/* Player.prototype.logPosition = function () { 
+    console.log("\nPlayer.x = " + this.x + ", Player.y = " + this.y);
+    allEnemies.forEach(function (enemy, index) { 
+        console.log(`Enemy${index + 1}.x = ${Math.floor(enemy.x)}, Enemy${index + 1}.y = ${enemy.y}`);
+    });
+} */
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -205,3 +199,11 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+function randomEnemySpeed() {
+    let minSpeed = 100;
+    let maxSpeed = 200;
+    return (function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    })(minSpeed, maxSpeed);
+}
