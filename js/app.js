@@ -40,11 +40,13 @@ Enemy.prototype.update = function (dt) {
     // all computers.
     this.x += this.speed * dt;
 
+    //reset enemy position when go out of canvas
     if (this.x > enemyEndPosition) {
         this.x = enemyStartPosition;
         this.speed = randomEnemySpeed();
     }
 
+    //Check for collision
     if (!this.gameFrozen) {
         if ((this.enemyOnRow(3) && playerOnRowNum(3)) || (this.enemyOnRow(2) && playerOnRowNum(2)) || (this.enemyOnRow(1) && playerOnRowNum(1))) {
             if (player.x - 78 <= this.x && player.x + 82 >= this.x) {
@@ -155,6 +157,18 @@ Player.prototype.canGo = function (direction) {
     }
 }
 
+Player.prototype.processMovement = function (direction) {
+    if (this.canGo(direction)) this.move(direction);
+};
+
+Player.prototype.handleInput = function (direction) {
+    this.processMovement(direction);
+
+    if (this.y < 0) {
+        this.gameWin();
+    }
+};
+
 /* Player.prototype.logPosition = function () { 
     console.log("\nPlayer.x = " + this.x + ", Player.y = " + this.y);
     allEnemies.forEach(function (enemy, index) { 
@@ -179,25 +193,6 @@ Player.prototype.resetPlayerPosition = function () {
     this.x = initialXLocation;
     this.y = initialYLocation;
 }
-
-Player.prototype.handleInput = function (key) {
-    if (key === "left" && this.canGo("left")) { 
-        this.move("left");
-    } else if (key === "right" && this.canGo("right")) {
-        this.move("right");
-    } else if (key === "up" && this.canGo("up")) {
-        this.move("up");
-    } else if (key === "down" && this.canGo("down")) {
-        this.move("down");
-    }
-
-    if (this.y < 0) {
-        this.gameWin();
-    }
-
-    //this.logPosition();
-};
-
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
