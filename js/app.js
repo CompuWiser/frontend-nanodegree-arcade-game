@@ -158,6 +158,7 @@ Player.prototype.handleInput = function (direction) {
 
     if (!this.disabled && this.y < 0) {
         this.gameWin();
+        this.winMessage();
     }
 };
 
@@ -165,7 +166,6 @@ Player.prototype.gameWin = function () {
     this.numberOfWins += 1;
     this.freezeAndReset(2);
     allEnemies[0].freezeAllEnemies(2);
-    this.winMessage();
 };
 
 Player.prototype.winMessage = function(){
