@@ -156,7 +156,7 @@ Player.prototype.canGo = function (direction) {
 Player.prototype.handleInput = function (direction) {
     if (this.canGo(direction)) this.move(direction);
 
-    if (this.y < 0) {
+    if (!this.disabled && this.y < 0) {
         this.gameWin();
     }
 };
