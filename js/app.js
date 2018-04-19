@@ -51,6 +51,7 @@ Enemy.prototype.update = function (dt) {
 };
 
 Enemy.prototype.gameLost = function () {
+    player.numberOfWins = 0;
     this.freezeAllEnemies(2);
     player.freezeAndReset(2);
 };
@@ -86,6 +87,7 @@ var Player = function playerConstructor() {
     this.y = initialYLocation;
     this.character = 'images/char-boy.png';
     this.disabled = false;
+    this.numberOfWins = 0;
 };
 
 Player.prototype.update = function () {
@@ -160,8 +162,14 @@ Player.prototype.handleInput = function (direction) {
 };
 
 Player.prototype.gameWin = function () {
+    this.numberOfWins += 1;
+    this.winMessage();
     this.freezeAndReset(2);
     allEnemies[0].freezeAllEnemies(2);
+};
+
+Player.prototype.winMessage = function(){
+    alert(`Congratulations! Number of Consecutive wins: ${this.numberOfWins}`);
 };
 
 Player.prototype.freezeAndReset = function (TimeInSeconds) {
