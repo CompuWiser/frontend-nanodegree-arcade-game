@@ -23,3 +23,5 @@
 * Move the character using arrow keys.
 * The game has no time limit.
 
+### Play The Game
+[Use this link to play the Game](https://compuwiser.github.io/frontend-nanodegree-arcade-game/)
