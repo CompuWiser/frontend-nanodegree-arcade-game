@@ -1,3 +1,6 @@
+let header = document.querySelector("header");
+let totalWins = 0;
+
 // Enemies our player must avoid
 var Enemy = function (line = 1) {
     // Variables applied to each of our instances go here,
@@ -51,9 +54,11 @@ Enemy.prototype.update = function (dt) {
 };
 
 Enemy.prototype.gameLost = function () {
-    player.numberOfWins = 0;
     this.freezeAllEnemies(2);
     player.freezeAndReset(2);
+
+    totalWins = 0;
+    updateScore();
 };
 
 Enemy.prototype.freezeAllEnemies = function (seconds) {
@@ -87,7 +92,6 @@ var Player = function playerConstructor() {
     this.y = initialYLocation;
     this.character = 'images/char-boy.png';
     this.disabled = false;
-    this.numberOfWins = 0;
 };
 
 Player.prototype.update = function () {
@@ -115,6 +119,7 @@ Player.prototype.move = function (direction) {
 
         case "up":
             this.y -= verticalStep;
+            console.log(this.y);
             break;
 
         case "down":
@@ -156,20 +161,17 @@ Player.prototype.canGo = function (direction) {
 Player.prototype.handleInput = function (direction) {
     if (this.canGo(direction)) this.move(direction);
 
-    if (!this.disabled && this.y < 0) {
+    if (!this.disabled && this.y == -12) {
         this.gameWin();
-        this.winMessage();
+        //this.winMessage();
     }
 };
 
 Player.prototype.gameWin = function () {
-    this.numberOfWins += 1;
+    totalWins++;
+    updateScore();
     this.freezeAndReset(2);
     allEnemies[0].freezeAllEnemies(2);
-};
-
-Player.prototype.winMessage = function(){
-    alert(`Congratulations! Number of Consecutive wins: ${this.numberOfWins}`);
 };
 
 Player.prototype.freezeAndReset = function (TimeInSeconds) {
@@ -214,4 +216,8 @@ function randomEnemySpeed() {
     return (function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     })(minSpeed, maxSpeed);
+}
+
+function updateScore() {
+    header.innerText = "Total Consecutive Wins: " + totalWins;
 }
