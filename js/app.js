@@ -16,22 +16,17 @@ var Enemy = function (line = 1) {
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+// Draw the enemy on the screen
+Enemy.prototype.render = function () {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// Update the enemy's position
 const enemyStartPosition = -100;
 const enemyEndPosition = 500;
 
-function playerOnRowNum(row) {
-    const playerYAxis = [240,156,72];
-    return player.y == playerYAxis[row - 1];
-}
-
-Enemy.prototype.enemyOnRow = function (row) { 
-    return this.y == this.enemyLinesOnYAxis[row - 1];
-};
-
 Enemy.prototype.update = function (dt) {
-    // You should multiply any movement by the dt parameter
+    // Multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed * dt;
@@ -51,6 +46,15 @@ Enemy.prototype.update = function (dt) {
             }
         }
     }
+};
+
+function playerOnRowNum(row) {
+    const playerYAxis = [240, 156, 72];
+    return player.y == playerYAxis[row - 1];
+}
+
+Enemy.prototype.enemyOnRow = function (row) {
+    return this.y == this.enemyLinesOnYAxis[row - 1];
 };
 
 Enemy.prototype.gameLost = function () {
@@ -77,13 +81,8 @@ Enemy.prototype.unFreezeAllEnemies = function () {
     this.gameFrozen = false;
 };
 
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
 
 // Construct a Player
-
 const initialXLocation = 203;
 const initialYLocation = 408;
 
@@ -102,34 +101,19 @@ Player.prototype.render = function () {
     ctx.drawImage(Resources.get(this.character), this.x, this.y);
 };
 
-const verticalStep = 84;
-const horizontalStep = 100;
+Player.prototype.handleInput = function (direction) {
+    if (this.canGo(direction)) this.move(direction);
 
-Player.prototype.move = function (direction) {
-    //this.logPosition();
-
-    switch (direction) {
-        case "left":
-            this.x -= horizontalStep;
-            break;
-    
-        case "right":
-            this.x += horizontalStep;
-            break;
-
-        case "up":
-            this.y -= verticalStep;
-            console.log(this.y);
-            break;
-
-        case "down":
-            this.y += verticalStep;
-            break;
+    if (!this.disabled && this.y == -12) {
+        this.gameWin();
     }
 };
 
 const verticalBlocks = 6;
 const horizontalBlocks = 5;
+
+const verticalStep = 84;
+const horizontalStep = 100;
 
 const leftEdge = initialXLocation - (horizontalStep * (horizontalBlocks - 1) / 2);
 const rightEdge = initialXLocation + (horizontalStep * (horizontalBlocks - 1) / 2);
@@ -143,7 +127,7 @@ Player.prototype.canGo = function (direction) {
         case "left":
             return this.x > leftEdge;
             break;
-    
+
         case "right":
             return this.x < rightEdge;
             break;
@@ -158,12 +142,23 @@ Player.prototype.canGo = function (direction) {
     }
 };
 
-Player.prototype.handleInput = function (direction) {
-    if (this.canGo(direction)) this.move(direction);
+Player.prototype.move = function (direction) {
+    switch (direction) {
+        case "left":
+            this.x -= horizontalStep;
+            break;
+    
+        case "right":
+            this.x += horizontalStep;
+            break;
 
-    if (!this.disabled && this.y == -12) {
-        this.gameWin();
-        //this.winMessage();
+        case "up":
+            this.y -= verticalStep;
+            break;
+
+        case "down":
+            this.y += verticalStep;
+            break;
     }
 };
 
@@ -190,9 +185,8 @@ Player.prototype.freezeAndReset = function (TimeInSeconds) {
     });
 } */
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+// Instantiate objects.
+
 var allEnemies = [new Enemy(1), new Enemy(2), new Enemy(3)];
 
 var player = new Player();
