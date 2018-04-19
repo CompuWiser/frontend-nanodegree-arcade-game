@@ -163,9 +163,9 @@ Player.prototype.handleInput = function (direction) {
 
 Player.prototype.gameWin = function () {
     this.numberOfWins += 1;
-    this.winMessage();
     this.freezeAndReset(2);
     allEnemies[0].freezeAllEnemies(2);
+    this.winMessage();
 };
 
 Player.prototype.winMessage = function(){
